@@ -7,19 +7,32 @@ import { searchRecipes } from '../util/recipe'
 import styles from '../styles/search.module.css'
 
 // TODO: destructure query from argument passed to getServerSideProps
-export async function getServerSideProps() {
-  const props = {}
+export async function getServerSideProps({ query }) {
+  const { q = ''} = query
+  if (!q) {
+    return {
+      props: { 
+        recipes: [] },
+    }
+  }
+  const recipes = await searchRecipes(q)
   // TODO: use searchRecipes to attach recipes prop based on query parameter
-  return { props }
-}
+  return { 
+    props: { recipes },
+  }
+} 
 
 export default function Search({recipes}) {
   const router = useRouter()
   const [query, setQuery] = useState("")
 
   function handleSubmit(e) {
-    e.preventDefault()
+    e.preventDefault();
     if (!query.trim()) return
+    router.replace({
+      pathname: router.pathname,
+      query: {q: query.trim() },
+    })
     // TODO: Use router.replace with router.pathname + queryString to send query to getServerSideProps
   }
   return (
@@ -40,10 +53,13 @@ export default function Search({recipes}) {
           id="recipe-search" autoFocus/>
         <button type="submit">Submit</button>
       </form>
-      {
-        recipes?.length
+      
+        {recipes?.length
         ? <section className={styles.results}>
           {/* TODO: Render recipes with RecipePreview Component */}
+          {recipes.map((recipes) => (
+            <RecipePreview key={recipes.id} {...recipes} />
+          ))}
         </section>
         : <p className={styles.noResults}>No Recipes Found!</p>
       }
