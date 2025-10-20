@@ -16,7 +16,6 @@ export async function getServerSideProps( {query}) {
     };
   }
   const recipes = await searchRecipes(q);
-  
   return {
     props: {
       recipes,
