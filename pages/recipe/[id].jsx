@@ -26,9 +26,8 @@ export default function Recipe({recipeInfo}) {
       </Head>
 
       {/* TODO: Render RecipeInfo component with recipeInfo prop, OR RecipeError if no recipe */}
-     
       {recipeInfo ? <RecipeInfo {...recipeInfo} /> : <RecipeError />}
-      <Link className={styles.return} href="/search">Return to Search</Link>
+      
     </>
   )
 }
